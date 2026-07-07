@@ -347,7 +347,6 @@ if not st.session_state["logged_in"]:
         st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    # Workspace UI (Simple version for now)
     st.markdown("<style>header {display: flex !important;} [data-testid='stSidebar'] {display: flex !important;}</style>", unsafe_allow_html=True)
     with st.sidebar:
         st.title("Contract AI")
@@ -358,4 +357,3 @@ else:
     
     st.title("Document Analysis")
     st.write("Welcome to your AI-powered contract analysis workspace.")
-    # (Rest of the analysis logic would go here)
