@@ -6,8 +6,17 @@ from langchain_core.prompts import PromptTemplate
 
 class AIAnalyzer:
     def __init__(self):
-        self.llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=os.environ.get("GOOGLE_API_KEY"))
+        self._llm = None
         self.text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+
+    @property
+    def llm(self):
+        if self._llm is None:
+            api_key = os.environ.get("GOOGLE_API_KEY")
+            if not api_key:
+                raise ValueError("GOOGLE_API_KEY is not set. Please provide it in your environment variables or Streamlit secrets.")
+            self._llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=api_key)
+        return self._llm
 
     def analyze_document(self, text: str):
         # This is a placeholder. Real implementation would involve more sophisticated prompt engineering
