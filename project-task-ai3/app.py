@@ -240,16 +240,16 @@ HERO_HTML = """
 <div class="orb orb-3"></div>
 <div class="orb orb-4"></div>
 <svg class="waves-container" viewBox="0 0 320 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M0 80 C 60 40, 120 100, 180 60 S 300 20, 320 50" stroke="rgba(52,217,128,0.35)" stroke-width="1.5"/>
-  <path d="M0 92 C 60 55, 120 110, 180 72 S 300 32, 320 62" stroke="rgba(52,217,128,0.22)" stroke-width="1.5"/>
-  <path d="M0 100 C 60 68, 120 118, 180 84 S 300 44, 320 74" stroke="rgba(52,217,128,0.14)" stroke-width="1.5"/>
+<path d="M0 80 C 60 40, 120 100, 180 60 S 300 20, 320 50" stroke="rgba(52,217,128,0.35)" stroke-width="1.5"/>
+<path d="M0 92 C 60 55, 120 110, 180 72 S 300 32, 320 62" stroke="rgba(52,217,128,0.22)" stroke-width="1.5"/>
+<path d="M0 100 C 60 68, 120 118, 180 84 S 300 44, 320 74" stroke="rgba(52,217,128,0.14)" stroke-width="1.5"/>
 </svg>
 <div class="hero-copy">
-  <div class="pill-v2">AI-Powered</div>
-  <h1 class="v2-title">Welcome to the <span>Contract &amp; Legal Document Risk Analyzer</span></h1>
-  <p>Please login or register to continue. Once you're in, upload any agreement and we'll flag termination windows, auto-renewals, and liability exposure in seconds.</p>
+<div class="pill-v2">AI-Powered</div>
+<h1 class="v2-title">Welcome to the <span>Contract &amp; Legal Document Risk Analyzer</span></h1>
+<p>Please login or register to continue. Once you're in, upload any agreement and we'll flag termination windows, auto-renewals, and liability exposure in seconds.</p>
 </div>
-"""
+""".strip()
 
 LOGO_HTML = """
 <div class="logo-v2">
