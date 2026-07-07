@@ -23,13 +23,13 @@ st.markdown("""
     @import url(\'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap\');
     
     :root {
-        --bg-color: #E0E5EC;
-        --text-color: #4A4A4A;
-        --text-light: #718096;
+        --bg-color: #E8F5E9;
+        --text-color: #2E7D32;
+        --text-light: #66BB6A;
         --shadow-light: #FFFFFF;
-        --shadow-dark: #A3B1C6;
-        --pastel-blue: #E3F2FD;
-        --pastel-purple: #F3E5F5;
+        --shadow-dark: #B9C6BA;
+        --pastel-green: #C8E6C9;
+        --pastel-mint: #E1F5FE;
     }
 
     html, body, [class*="css"] {
@@ -150,8 +150,8 @@ st.markdown("""
         line-height: 1.7;
     }
 
-    .panel-blue { background-color: var(--pastel-blue); box-shadow: inset 4px 4px 8px #C1D5E3, inset -4px -4px 8px #FFFFFF; }
-    .panel-purple { background-color: var(--pastel-purple); box-shadow: inset 4px 4px 8px #D6C9D9, inset -4px -4px 8px #FFFFFF; }
+    .panel-green { background-color: var(--pastel-green); box-shadow: inset 4px 4px 8px #A5D6A7, inset -4px -4px 8px #FFFFFF; }
+    .panel-mint { background-color: var(--pastel-mint); box-shadow: inset 4px 4px 8px #B3E5FC, inset -4px -4px 8px #FFFFFF; }
 
     /* Neumorphic Metrics */
     .metric-card {
@@ -284,10 +284,10 @@ if st.session_state["logged_in"]:
                         st.success("Analysis complete!")
                         
                         st.subheader("Analysis Results")
-                        st.markdown(f'<div class="neu-panel panel-blue">{analysis_result}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="neu-panel panel-green">{analysis_result}</div>', unsafe_allow_html=True)
                         
                         st.subheader("Executive Summary")
-                        st.markdown(f'<div class="neu-panel panel-purple">{summary_result}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="neu-panel panel-mint">{summary_result}</div>', unsafe_allow_html=True)
 
             except Exception as e:
                 st.error(f"Error processing document: {e}")
@@ -311,7 +311,7 @@ if st.session_state["logged_in"]:
                     search_results = ai_analyzer.semantic_search(doc.content, user_query)
                     if search_results:
                         st.markdown(f"**Document: {doc.filename}**")
-                        st.markdown(f'<div class="neu-panel panel-blue">{search_results}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="neu-panel panel-green">{search_results}</div>', unsafe_allow_html=True)
                     else:
                         st.info(f"No relevant information found in {doc.filename} for your query.")
 
