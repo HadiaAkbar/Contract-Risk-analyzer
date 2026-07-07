@@ -6,174 +6,180 @@ from database import SessionLocal, User, Document, get_db
 from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 
-# Set up environment variable for Google API Key
-# In a real deployment, this would be managed securely (e.g., Streamlit Secrets, environment variables)
-# For local testing, you can set it in your environment or directly here for development purposes.
-# os.environ["GOOGLE_API_KEY"] = "YOUR_GOOGLE_API_KEY"
-
 st.set_page_config(
-    page_title="AI-Powered Contract & Legal Document Risk Analyzer",
+    page_title="Contract Analyzer — AI-Powered Risk Assessment",
     page_icon="⚖️", 
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
+# Custom CSS based on the provided design
 st.markdown("""
 <style>
-    @import url(\'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap\');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
     :root {
-        --bg-color: #0B1120; /* Deep Dark Navy/Green Background */
-        --card-bg: #111827; /* Darker Card Background */
-        --text-color: #F9FAFB; /* Off-white text */
-        --text-light: #9CA3AF; /* Muted grey text */
-        --accent-color: #10B981; /* Emerald Green Accent */
-        --accent-hover: #059669; /* Darker Emerald for hover */
-        --border-color: #1F2937;
+        --bg: #05170f;
+        --bg-2: #071f14;
+        --green-1: #0f6b45;
+        --green-2: #17a75f;
+        --green-3: #34d980;
+        --green-glow: #22c76e;
+        --text: #eafff3;
+        --text-soft: #b6d9c6;
+        --line: rgba(255,255,255,0.08);
+        --panel: #0a2318;
     }
 
     html, body, [class*="css"] {
-        font-family: \'Poppins\', sans-serif;
-        color: var(--text-color);
-        background-color: var(--bg-color) !important;
+        font-family: 'Inter', sans-serif;
+        color: var(--text);
+        background-color: var(--bg) !important;
     }
 
-    /* Modern Dark Card */
-    .neu-container {
-        background-color: var(--card-bg);
-        border-radius: 16px;
-        border: 1px solid var(--border-color);
-        padding: 2.5rem;
-        margin-bottom: 2rem;
+    /* Auth Page Specifics */
+    .auth-container {
+        display: flex;
+        min-height: 80vh;
+        background: linear-gradient(180deg, #04140d 0%, #061a11 100%);
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid var(--line);
     }
 
-    /* Modern Dark Inset */
-    .neu-inset {
-        background-color: rgba(255, 255, 255, 0.03);
-        border-radius: 12px;
-        border: 1px solid var(--border-color);
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
+    .auth-panel {
+        width: 420px;
+        background: linear-gradient(180deg, #08201548 0%, #05170f 100%), var(--bg-2);
+        border-right: 1px solid var(--line);
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
     }
 
-    /* Modern Accent Button */
-    .stButton>button {
-        width: 100%;
-        border-radius: 10px;
-        padding: 0.75rem 1.5rem;
-        background-color: var(--accent-color);
-        color: white;
-        font-weight: 600;
-        border: none;
-        transition: all 0.3s ease;
+    .auth-hero {
+        flex: 1;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px;
+        overflow: hidden;
     }
 
-    .stButton>button:hover {
-        background-color: var(--accent-hover);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2);
-        color: white;
-    }
-
-    .stButton>button:active {
-        transform: translateY(0);
-    }
-
-    /* Header Styling */
-    .header-section {
-        text-align: center;
-        padding: 4rem 1rem;
-    }
-
-    .header-section h1 {
-        font-weight: 800;
-        font-size: 3.5rem;
-        color: white;
-        letter-spacing: -1px;
-        margin-bottom: 1rem;
-    }
-
-    .tagline {
-        font-weight: 400;
-        font-size: 1.25rem;
-        color: var(--text-light);
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    /* Sidebar Branding */
-    [data-testid="stSidebar"] {
-        background-color: #0F172A !important;
-        border-right: 1px solid var(--border-color);
-    }
-
-    .sidebar-logo {
-        font-weight: 800;
-        font-size: 1.5rem;
-        color: white;
-        margin-bottom: 2rem;
+    .logo-text {
         display: flex;
         align-items: center;
         gap: 10px;
+        font-size: 20px;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 40px;
     }
 
-    /* Modern Tabs */
-    .stTabs [data-baseweb="tab-list"] {
+    .auth-heading {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 18px;
+    }
+
+    /* Buttons & Inputs */
+    .stButton>button {
+        width: 100%;
+        background: linear-gradient(180deg, var(--green-3), var(--green-2)) !important;
+        color: #04170e !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+        padding: 12px 0 !important;
+        border: none !important;
+        border-radius: 10px !important;
+        box-shadow: 0 10px 24px -8px rgba(34,199,110,0.4) !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .stButton>button:hover {
+        filter: brightness(1.1);
+        transform: translateY(-1px);
+    }
+
+    .stTextInput>div>div>input {
+        background: rgba(255,255,255,0.04) !important;
+        border: 1px solid var(--line) !important;
+        border-radius: 10px !important;
+        color: #fff !important;
+        padding: 12px !important;
+    }
+
+    .stTextInput>div>div>input:focus {
+        border-color: var(--green-3) !important;
+        background: rgba(52,217,128,0.06) !important;
+    }
+
+    /* Hero Copy */
+    .eyebrow {
+        display: inline-flex;
+        align-items: center;
         gap: 8px;
-        background-color: transparent;
-        border-bottom: 1px solid var(--border-color);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--green-3);
+        text-transform: uppercase;
+        background: rgba(52,217,128,0.08);
+        border: 1px solid rgba(52,217,128,0.25);
+        padding: 7px 14px;
+        border-radius: 999px;
+        margin-bottom: 20px;
     }
 
-    .stTabs [data-baseweb="tab"] {
-        background-color: transparent;
-        border-radius: 8px 8px 0 0;
-        padding: 12px 24px;
-        color: var(--text-light);
-        font-weight: 500;
-        border: none;
+    h1 {
+        font-size: 40px;
+        font-weight: 800;
+        line-height: 1.2;
+        color: #fff;
+        margin-bottom: 20px;
     }
 
-    .stTabs [aria-selected="true"] {
-        background-color: rgba(16, 185, 129, 0.1) !important;
-        color: var(--accent-color) !important;
-        border-bottom: 2px solid var(--accent-color) !important;
+    h1 span {
+        background: linear-gradient(180deg, var(--green-3), var(--green-2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
-    /* Modern Result Panels */
-    .neu-panel {
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
+    .hero-text {
+        font-size: 16px;
+        color: var(--text-soft);
         line-height: 1.6;
-        border: 1px solid var(--border-color);
+        max-width: 500px;
     }
 
-    .panel-green { background-color: rgba(16, 185, 129, 0.05); border-left: 4px solid var(--accent-color); }
-    .panel-mint { background-color: rgba(59, 130, 246, 0.05); border-left: 4px solid #3B82F6; }
-
-    /* Modern Metrics */
+    /* Main Workspace UI */
+    .header-section { text-align: center; padding: 3rem 1rem; }
+    .neu-panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .panel-green { border-left: 4px solid var(--green-3); }
+    .panel-mint { border-left: 4px solid var(--green-glow); }
+    
     .metric-card {
-        background-color: var(--card-bg);
-        padding: 1.5rem;
+        background: var(--panel);
+        padding: 20px;
         border-radius: 12px;
         text-align: center;
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--line);
     }
+    .metric-label { font-size: 12px; color: var(--text-soft); text-transform: uppercase; }
+    .metric-value { font-size: 32px; font-weight: 800; color: var(--green-3); }
 
-    .metric-label {
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--text-light);
-        text-transform: uppercase;
-        margin-bottom: 0.5rem;
+    [data-testid="stSidebar"] {
+        background-color: var(--bg-2) !important;
+        border-right: 1px solid var(--line);
     }
-
-    .metric-value {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: var(--text-color);
-    }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -183,11 +189,11 @@ def get_ai_analyzer():
 
 ai_analyzer = get_ai_analyzer()
 
-# --- User Authentication (Placeholder for now) ---
+# --- User Authentication ---
 def authenticate_user(username, password):
     db: Session = next(get_db())
     user = db.query(User).filter(User.username == username).first()
-    if user and user.password_hash == password: # In real app, use hashed passwords
+    if user and user.password_hash == password:
         st.session_state["logged_in"] = True
         st.session_state["username"] = username
         st.session_state["user_id"] = user.id
@@ -198,8 +204,8 @@ def authenticate_user(username, password):
 def register_user(username, password):
     db: Session = next(get_db())
     if db.query(User).filter(User.username == username).first():
-        return False # User already exists
-    new_user = User(username=username, password_hash=password) # Hash password in real app
+        return False
+    new_user = User(username=username, password_hash=password)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -211,44 +217,74 @@ def logout_user():
     st.session_state["user_id"] = None
     st.session_state["user_role"] = None
 
-# --- Sidebar Navigation ---
-with st.sidebar:
-    st.markdown("<div class=\"sidebar-logo\">Contract Analyzer AI</div>", unsafe_allow_html=True)
-    
-    if "logged_in" not in st.session_state:
-        st.session_state["logged_in"] = False
+# --- Application Logic ---
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
 
-    if not st.session_state["logged_in"]:
-        st.subheader("Login / Register")
-        login_tab, register_tab = st.tabs(["Login", "Register"])
-        with login_tab:
-            username = st.text_input("Username", key="login_username")
-            password = st.text_input("Password", type="password", key="login_password")
-            if st.button("Login", key="login_button"):
+if not st.session_state["logged_in"]:
+    # Display the Auth Page
+    col1, col2 = st.columns([1, 1.5])
+    
+    with col1:
+        st.markdown("""
+        <div class="logo-text">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 3v18l8-5 8 5V3a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1z" fill="#34d980"/>
+            </svg>
+            Contract Analyzer
+        </div>
+        <p class="auth-heading">Login / Register</p>
+        """, unsafe_allow_html=True)
+        
+        auth_tab = st.radio("Select Action", ["Login", "Register"], label_visibility="collapsed")
+        
+        if auth_tab == "Login":
+            username = st.text_input("Username", key="login_user")
+            password = st.text_input("Password", type="password", key="login_pass")
+            if st.button("Login"):
                 if authenticate_user(username, password):
-                    st.success("Logged in successfully!")
-                    st.experimental_rerun()
+                    st.success("Welcome back!")
+                    st.rerun()
                 else:
-                    st.error("Invalid username or password")
-        with register_tab:
-            new_username = st.text_input("New Username", key="register_username")
-            new_password = st.text_input("New Password", type="password", key="register_password")
-            if st.button("Register", key="register_button"):
-                if register_user(new_username, new_password):
-                    st.success("Registration successful! Please login.")
+                    st.error("Invalid credentials")
+        else:
+            new_user = st.text_input("New Username", key="reg_user")
+            new_pass = st.text_input("New Password", type="password", key="reg_pass")
+            if st.button("Create Account"):
+                if register_user(new_user, new_pass):
+                    st.success("Account created! Please login.")
                 else:
-                    st.error("Username already exists")
-    else:
-        st.write(f"Welcome, {st.session_state['username']} ({st.session_state['user_role']})")
+                    st.error("Username taken")
+                    
+        st.markdown("""
+        <div style="margin-top: 40px; font-size: 12px; color: #b6d9c6; opacity: 0.6;">
+            By continuing you agree to our <span style="color: #34d980">Terms</span> and <span style="color: #34d980">Privacy Policy</span>.
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+        <div class="auth-hero">
+            <div class="hero-copy">
+                <div class="eyebrow">AI-Powered</div>
+                <h1>Welcome to the <span>Contract & Legal Document Risk Analyzer</span></h1>
+                <p class="hero-text">Upload any agreement and we'll flag termination windows, auto-renewals, and liability exposure in seconds.</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+else:
+    # --- Main Workspace ---
+    with st.sidebar:
+        st.markdown("<div class=\"logo-text\">Contract Analyzer AI</div>", unsafe_allow_html=True)
+        st.write(f"Logged in as: **{st.session_state['username']}**")
         choice = st.selectbox("WORKSPACE", ["Document Analysis", "Semantic Search", "Dashboard", "Admin Panel"])
         if st.button("Logout"):
             logout_user()
-            st.experimental_rerun()
+            st.rerun()
 
-# --- Main Content ---
-if st.session_state["logged_in"]:
     if choice == "Document Analysis":
-        st.markdown("<div class=\"header-section\"><h1>AI-Powered Contract Analysis</h1><p class=\"tagline\">Upload and analyze your legal documents for risks and insights.</p></div>", unsafe_allow_html=True)
+        st.markdown("<div class=\"header-section\"><h1>Contract Analysis</h1><p class=\"tagline\">Upload documents to identify risks and key obligations.</p></div>", unsafe_allow_html=True)
         
         uploaded_file = st.file_uploader("Upload Document", type=["txt", "pdf", "docx"])
         if uploaded_file:
@@ -259,26 +295,22 @@ if st.session_state["logged_in"]:
             
             try:
                 document_content = read_file(temp_file_path)
-                st.success("Document uploaded and read successfully!")
+                st.success("Document ready for analysis.")
                 
-                if st.button("Analyze Document"):
-                    with st.spinner("Analyzing document for clauses and risks..."):
+                if st.button("Run AI Analysis"):
+                    with st.spinner("Processing document..."):
                         analysis_result = ai_analyzer.analyze_document(document_content)
                         summary_result = ai_analyzer.summarize_document(document_content)
                         
-                        # Placeholder for saving to DB and displaying results
                         db: Session = next(get_db())
                         new_doc = Document(
                             user_id=st.session_state["user_id"],
                             filename=uploaded_file.name,
                             content=document_content,
-                            executive_summary=summary_result # This needs parsing from summary_result
-                            # Populate other fields from analysis_result and summary_result
+                            executive_summary=summary_result
                         )
                         db.add(new_doc)
                         db.commit()
-                        st.session_state["last_analysis"] = {"analysis": analysis_result, "summary": summary_result, "content": document_content}
-                        st.success("Analysis complete!")
                         
                         st.subheader("Analysis Results")
                         st.markdown(f'<div class="neu-panel panel-green">{analysis_result}</div>', unsafe_allow_html=True)
@@ -287,73 +319,42 @@ if st.session_state["logged_in"]:
                         st.markdown(f'<div class="neu-panel panel-mint">{summary_result}</div>', unsafe_allow_html=True)
 
             except Exception as e:
-                st.error(f"Error processing document: {e}")
+                st.error(f"Error: {e}")
             finally:
                 if os.path.exists(temp_file_path):
                     os.remove(temp_file_path)
 
     elif choice == "Semantic Search":
-        st.markdown("<div class=\"header-section\"><h1>Semantic Search</h1><p class=\"tagline\">Search your uploaded documents using natural language queries.</p></div>", unsafe_allow_html=True)
-        
-        user_query = st.text_input("Enter your search query:")
-        if user_query and st.button("Search Documents"):
+        st.markdown("<div class=\"header-section\"><h1>Semantic Search</h1></div>", unsafe_allow_html=True)
+        user_query = st.text_input("Ask a question about your documents:")
+        if user_query and st.button("Search"):
             db: Session = next(get_db())
             user_docs = db.query(Document).filter(Document.user_id == st.session_state["user_id"]).all()
-            
             if not user_docs:
-                st.info("No documents uploaded yet. Please upload documents in the 'Document Analysis' section.")
+                st.info("No documents found.")
             else:
-                st.subheader("Search Results")
                 for doc in user_docs:
-                    search_results = ai_analyzer.semantic_search(doc.content, user_query)
-                    if search_results:
-                        st.markdown(f"**Document: {doc.filename}**")
-                        st.markdown(f'<div class="neu-panel panel-green">{search_results}</div>', unsafe_allow_html=True)
-                    else:
-                        st.info(f"No relevant information found in {doc.filename} for your query.")
+                    res = ai_analyzer.semantic_search(doc.content, user_query)
+                    if res:
+                        st.markdown(f"**From: {doc.filename}**")
+                        st.markdown(f'<div class="neu-panel panel-green">{res}</div>', unsafe_allow_html=True)
 
     elif choice == "Dashboard":
-        st.markdown("<div class=\"header-section\"><h1>Dashboard</h1><p class=\"tagline\">Overview of your document analysis and risks.</p></div>", unsafe_allow_html=True)
+        st.markdown("<div class=\"header-section\"><h1>Dashboard</h1></div>", unsafe_allow_html=True)
         db: Session = next(get_db())
         user_docs = db.query(Document).filter(Document.user_id == st.session_state["user_id"]).all()
-
-        total_docs = len(user_docs)
-        avg_risk_score = sum([doc.risk_score for doc in user_docs]) / total_docs if total_docs > 0 else 0
-        high_risk_docs = [doc.filename for doc in user_docs if doc.risk_score > 0.7] # Example threshold
-
-        st.markdown(f'<div class="metric-card"><p class="metric-label">Total Documents</p><p class="metric-value">{total_docs}</p></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="metric-card"><p class="metric-label">Average Risk Score</p><p class="metric-value">{avg_risk_score:.2f}</p></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="metric-card"><p class="metric-label">High Risk Documents</p><p class="metric-value">{len(high_risk_docs)}</p></div>', unsafe_allow_html=True)
-
-        if high_risk_docs:
-            st.subheader("High Risk Documents")
-            for doc_name in high_risk_docs:
-                st.write(f"- {doc_name}")
-
-        st.subheader("Processing History")
-        for doc in user_docs:
-            with st.expander(f"Document: {doc.filename} (Uploaded: {doc.upload_date.strftime('%Y-%m-%d %H:%M')})"):
-                st.json({
-                    "Contract Type": doc.contract_type,
-                    "Risk Score": doc.risk_score,
-                    "Executive Summary": doc.executive_summary[:200] + "..." if doc.executive_summary else "N/A"
-                })
+        
+        c1, c2, c3 = st.columns(3)
+        with c1: st.markdown(f'<div class="metric-card"><p class="metric-label">Total Docs</p><p class="metric-value">{len(user_docs)}</p></div>', unsafe_allow_html=True)
+        with c2: st.markdown(f'<div class="metric-card"><p class="metric-label">Risks Flagged</p><p class="metric-value">0</p></div>', unsafe_allow_html=True)
+        with c3: st.markdown(f'<div class="metric-card"><p class="metric-label">Active Alerts</p><p class="metric-value">0</p></div>', unsafe_allow_html=True)
 
     elif choice == "Admin Panel":
         if st.session_state["user_role"] == "admin":
-            st.markdown("<div class=\"header-section\"><h1>Admin Panel</h1><p class=\"tagline\">Manage users and monitor system activity.</p></div>", unsafe_allow_html=True)
-            
+            st.subheader("System Administration")
             db: Session = next(get_db())
             users = db.query(User).all()
-            st.subheader("Manage Users")
-            for user in users:
-                st.write(f"User ID: {user.id}, Username: {user.username}, Role: {user.role}")
-            
-            st.subheader("Processing Statistics (Placeholder)")
-            st.info("Detailed processing statistics and system logs would be displayed here.")
-
+            for u in users:
+                st.write(f"User: {u.username} | Role: {u.role}")
         else:
-            st.error("You do not have administrative privileges to access this panel.")
-
-else:
-    st.markdown("<div class=\"header-section\"><h1>Welcome to the AI-Powered Contract & Legal Document Risk Analyzer</h1><p class=\"tagline\">Please login or register to continue.</p></div>", unsafe_allow_html=True)
+            st.error("Access Denied")
