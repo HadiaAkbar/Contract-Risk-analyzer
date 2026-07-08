@@ -24,34 +24,51 @@ LOGIN_CSS = """
     .block-container {padding: 0 !important; max-width: 100% !important;}
     .stApp {background: #061109;}
 
-    [data-testid="stHorizontalBlock"] {gap: 0;}
-
-    /* Left panel (form) */
-    div[data-testid="column"]:nth-of-type(1) {
-        background: #071309;
+    [data-testid="stHorizontalBlock"] {
+        gap: 0 !important;
+        align-items: stretch !important;
+    }
+    [data-testid="stHorizontalBlock"] > div[data-testid="column"] {
         min-height: 100vh;
+    }
+
+    /* Left panel (form) — targeted via marker so column order never matters */
+    div[data-testid="column"]:has(> div .login-marker) {
+        background: #071309;
         padding: 3.5rem 3rem 2rem 3rem;
         border-right: 1px solid rgba(52, 211, 153, 0.08);
+        flex: 0 0 34% !important;
+        max-width: 34% !important;
+    }
+    div[data-testid="column"]:has(> div .login-marker) [data-testid="stVerticalBlock"] {
+        max-width: 380px;
     }
 
     /* Right panel (hero) */
-    div[data-testid="column"]:nth-of-type(2) {
-        min-height: 100vh;
+    div[data-testid="column"]:has(> div .hero-marker) {
         background:
             radial-gradient(circle at 78% 15%, rgba(52,211,153,0.28) 0%, rgba(52,211,153,0.0) 42%),
             radial-gradient(circle at 60% 55%, rgba(34,197,94,0.20) 0%, rgba(34,197,94,0.0) 45%),
             radial-gradient(circle at 18% 78%, rgba(16,120,80,0.35) 0%, rgba(16,120,80,0.0) 30%),
             linear-gradient(160deg, #04140b 0%, #0a2416 55%, #0f2f1c 100%);
-        padding: 5rem 4rem;
-        display: flex;
+        padding: 0 4rem;
+        display: flex !important;
         flex-direction: column;
         justify-content: center;
         position: relative;
         overflow: hidden;
+        flex: 1 1 66% !important;
+    }
+    div[data-testid="column"]:has(> div .hero-marker) [data-testid="stVerticalBlock"] {
+        justify-content: center;
     }
 
-    .logo-row {display:flex; align-items:center; gap:0.6rem; margin-bottom:2.5rem;}
-    .logo-row .flag {color:#34d399; font-size:1.6rem;}
+    .logo-row {display:flex; align-items:center; gap:0.65rem; margin-bottom:2.5rem;}
+    .logo-row .flag {
+        display:flex; align-items:center; justify-content:center;
+        width:34px; height:34px; border-radius:8px;
+        background: rgba(52,211,153,0.12);
+    }
     .logo-row .brand {color:#f5f7f6; font-size:1.5rem; font-weight:700;}
 
     .section-label {
@@ -65,13 +82,13 @@ LOGIN_CSS = """
         border: 1px solid rgba(52,211,153,0.35);
         color:#4ade80; font-weight:700; font-size:0.85rem;
         padding:0.45rem 1rem; border-radius:999px; margin-bottom:2rem;
-        letter-spacing:1px;
+        letter-spacing:1px; width:fit-content;
     }
-    .ai-badge .dot {width:7px; height:7px; border-radius:50%; background:#4ade80;}
+    .ai-badge .dot {width:7px; height:7px; border-radius:50%; background:#4ade80; flex-shrink:0;}
 
     .hero-title {
-        color:#f5f7f6; font-size:2.9rem; font-weight:800; line-height:1.15;
-        margin-bottom:1.5rem;
+        color:#f5f7f6; font-size:clamp(2rem, 3vw, 2.9rem); font-weight:800; line-height:1.2;
+        margin-bottom:1.5rem; max-width:900px;
     }
     .hero-title .accent {color:#4ade80;}
 
@@ -79,21 +96,25 @@ LOGIN_CSS = """
         color:#b9c4bd; font-size:1.1rem; line-height:1.7; max-width:640px;
     }
 
-    .waves {position:absolute; bottom:2.5rem; left:4rem; opacity:0.5;}
+    .waves {margin-top:2.5rem; opacity:0.5;}
 
     /* Pill tabs */
+    .stTabs {margin-bottom:0.5rem;}
     .stTabs [data-baseweb="tab-list"] {
-        background:#0d1a13; border-radius:10px; padding:5px; gap:4px;
+        background:#0d1a13 !important; border-radius:10px; padding:5px; gap:4px;
+        width:100%; display:flex; border-bottom:none !important;
     }
     .stTabs [data-baseweb="tab"] {
-        background:transparent; border-radius:8px; color:#9ca3af;
-        font-weight:600; padding:10px 0; flex:1; justify-content:center;
+        background:transparent; border-radius:8px !important; color:#9ca3af;
+        font-weight:600; padding:10px 0 !important; flex:1 1 0 !important;
+        justify-content:center; display:flex; margin:0 !important;
     }
     .stTabs [aria-selected="true"] {
         background:#34d399 !important; color:#04140b !important;
     }
-    .stTabs [data-baseweb="tab-highlight"] {background:transparent;}
-    .stTabs [data-baseweb="tab-border"] {display:none;}
+    .stTabs [data-baseweb="tab-highlight"] {display:none !important;}
+    .stTabs [data-baseweb="tab-border"] {display:none !important;}
+    .stTabs [data-testid="stMarkdownContainer"] p {font-weight:inherit;}
 
     /* Inputs */
     .stTextInput > label {color:#d1d5db !important; font-weight:600; font-size:0.9rem;}
@@ -106,15 +127,16 @@ LOGIN_CSS = """
     .stTextInput input::placeholder {color:#5b6660;}
 
     /* Buttons */
+    div[data-testid="stButton"] {width:100%;}
     .stButton button {
         background:#34d399; color:#04140b; border:none; border-radius:8px;
-        font-weight:700; padding:0.7rem 0; width:100%; margin-top:0.5rem;
+        font-weight:700; padding:0.7rem 0; width:100% !important; margin-top:0.5rem;
         transition:background 0.15s ease;
     }
     .stButton button:hover {background:#22c55e; color:#04140b;}
+    .stButton button p {color:#04140b !important; font-weight:700;}
 
-    .login-title {color:#f5f7f6; font-size:1.6rem; font-weight:700; margin-bottom:2rem;}
-    .fine-print {color:#7c8a83; font-size:0.85rem; margin-top:1.5rem;}
+    .fine-print {color:#7c8a83; font-size:0.85rem; margin-top:1.5rem; line-height:1.6;}
     .fine-print a {color:#4ade80; text-decoration:none;}
 </style>
 """
@@ -123,13 +145,18 @@ LOGIN_CSS = """
 def login_view():
     st.markdown(LOGIN_CSS, unsafe_allow_html=True)
 
-    left, right = st.columns([1, 1.4], gap="small")
+    left, right = st.columns([1, 2], gap="small")
 
     with left:
         st.markdown(
             """
+            <div class="login-marker"></div>
             <div class="logo-row">
-                <span class="flag">🔖</span>
+                <span class="flag">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" fill="#34d399"/>
+                    </svg>
+                </span>
                 <span class="brand">Contract Analyzer</span>
             </div>
             <div class="section-label">Login / Register</div>
@@ -178,9 +205,10 @@ def login_view():
     with right:
         st.markdown(
             """
+            <div class="hero-marker"></div>
             <div class="ai-badge"><span class="dot"></span> AI-POWERED</div>
             <div class="hero-title">
-                Welcome to the <span class="accent">Contract &amp; Legal<br/>Document Risk Analyzer</span>
+                Welcome to the <span class="accent">Contract &amp; Legal Document Risk Analyzer</span>
             </div>
             <div class="hero-sub">
                 Please login or register to continue. Once you're in, upload any agreement
