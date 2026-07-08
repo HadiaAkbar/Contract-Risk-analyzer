@@ -35,13 +35,13 @@ LOGIN_CSS = """
     /* Left panel (form) — targeted via marker so column order never matters */
     div[data-testid="column"]:has(> div .login-marker) {
         background: #071309;
-        padding: 3.5rem 3rem 2rem 3rem;
+        padding: 3.5rem 3.5rem 2rem 3.5rem;
         border-right: 1px solid rgba(52, 211, 153, 0.08);
-        flex: 0 0 34% !important;
-        max-width: 34% !important;
+        flex: 0 0 40% !important;
+        max-width: 40% !important;
     }
     div[data-testid="column"]:has(> div .login-marker) [data-testid="stVerticalBlock"] {
-        max-width: 380px;
+        max-width: 420px;
     }
 
     /* Right panel (hero) */
@@ -51,13 +51,13 @@ LOGIN_CSS = """
             radial-gradient(circle at 60% 55%, rgba(34,197,94,0.20) 0%, rgba(34,197,94,0.0) 45%),
             radial-gradient(circle at 18% 78%, rgba(16,120,80,0.35) 0%, rgba(16,120,80,0.0) 30%),
             linear-gradient(160deg, #04140b 0%, #0a2416 55%, #0f2f1c 100%);
-        padding: 0 4rem;
+        padding: 0 4.5rem;
         display: flex !important;
         flex-direction: column;
         justify-content: center;
         position: relative;
         overflow: hidden;
-        flex: 1 1 66% !important;
+        flex: 1 1 60% !important;
     }
     div[data-testid="column"]:has(> div .hero-marker) [data-testid="stVerticalBlock"] {
         justify-content: center;
@@ -66,7 +66,7 @@ LOGIN_CSS = """
     .logo-row {display:flex; align-items:center; gap:0.65rem; margin-bottom:2.5rem;}
     .logo-row .flag {
         display:flex; align-items:center; justify-content:center;
-        width:34px; height:34px; border-radius:8px;
+        width:40px; height:40px; border-radius:8px;
         background: rgba(52,211,153,0.12);
     }
     .logo-row .brand {color:#f5f7f6; font-size:1.5rem; font-weight:700;}
@@ -87,7 +87,7 @@ LOGIN_CSS = """
     .ai-badge .dot {width:7px; height:7px; border-radius:50%; background:#4ade80; flex-shrink:0;}
 
     .hero-title {
-        color:#f5f7f6; font-size:clamp(2rem, 3vw, 2.9rem); font-weight:800; line-height:1.2;
+        color:#f5f7f6; font-size:clamp(1.8rem, 3vw, 3rem); font-weight:800; line-height:1.2;
         margin-bottom:1.5rem; max-width:900px;
     }
     .hero-title .accent {color:#4ade80;}
@@ -106,8 +106,8 @@ LOGIN_CSS = """
     }
     .stTabs [data-baseweb="tab"] {
         background:transparent; border-radius:8px !important; color:#9ca3af;
-        font-weight:600; padding:10px 0 !important; flex:1 1 0 !important;
-        justify-content:center; display:flex; margin:0 !important;
+        font-weight:600; padding:12px 0 !important; flex:1 1 0 !important;
+        justify-content:center; display:flex; margin:0 !important; min-height:44px; align-items:center;
     }
     .stTabs [aria-selected="true"] {
         background:#34d399 !important; color:#04140b !important;
@@ -121,7 +121,7 @@ LOGIN_CSS = """
     .stTextInput input {
         background:#0d1a13 !important; color:#f5f7f6 !important;
         border:1px solid rgba(52,211,153,0.15) !important; border-radius:8px !important;
-        padding:0.7rem 0.9rem !important;
+        padding:0.85rem 1rem !important; min-height:44px;
     }
     .stTextInput input:focus {border:1px solid #34d399 !important; box-shadow:none !important;}
     .stTextInput input::placeholder {color:#5b6660;}
@@ -130,8 +130,8 @@ LOGIN_CSS = """
     div[data-testid="stButton"] {width:100%;}
     .stButton button {
         background:#34d399; color:#04140b; border:none; border-radius:8px;
-        font-weight:700; padding:0.7rem 0; width:100% !important; margin-top:0.5rem;
-        transition:background 0.15s ease;
+        font-weight:700; padding:0.9rem 0; width:100% !important; margin-top:0.5rem;
+        transition:background 0.15s ease; min-height:44px;
     }
     .stButton button:hover {background:#22c55e; color:#04140b;}
     .stButton button p {color:#04140b !important; font-weight:700;}
