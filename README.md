@@ -13,6 +13,9 @@ risk reports.
 > prompts, write your own commit history as you build on it, and take the required
 > screenshots. Treat this as a strong starting point, not a copy-paste final deliverable.
 
+## Link
+https://contract-risk-analyzer-jlftip4wgq5fnpiazyedmt.streamlit.app/
+
 ## Architecture
 
 ```
