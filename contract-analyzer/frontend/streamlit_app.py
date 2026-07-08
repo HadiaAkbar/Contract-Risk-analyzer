@@ -1004,15 +1004,24 @@ def show_upload():
     st.header("📤 Upload & Analyze Document")
     uploaded_file = st.file_uploader("Choose a document", type=["pdf", "docx", "txt"])
     if uploaded_file:
-        with st.spinner("Analyzing document..."):
+        with st.spinner("Uploading and analyzing document..."):
+            # Step 1: Upload
             files = {"file": uploaded_file}
             r = requests.post(f"{API_URL}/documents/upload", headers=auth_headers(), files=files)
-            if r.status_code == 200:
-                result = r.json()
-                st.success("Document analyzed successfully!")
-                st.json(result)
+            if r.status_code == 201:
+                doc = r.json()
+                doc_id = doc["id"]
+                
+                # Step 2: Analyze
+                r_analyze = requests.post(f"{API_URL}/documents/{doc_id}/analyze", headers=auth_headers())
+                if r_analyze.status_code == 200:
+                    result = r_analyze.json()
+                    st.success("Document analyzed successfully!")
+                    st.json(result)
+                else:
+                    st.error(f"Analysis failed: {r_analyze.json().get('detail', 'Unknown error')}")
             else:
-                st.error("Failed to analyze document")
+                st.error(f"Upload failed: {r.json().get('detail', 'Unknown error')}")
 
 
 def show_documents():
