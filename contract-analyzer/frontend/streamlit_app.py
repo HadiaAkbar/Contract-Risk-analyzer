@@ -799,6 +799,11 @@ DASHBOARD_CSS = """
 def login_view():
     st.markdown(LOGIN_CSS, unsafe_allow_html=True)
     
+    # Debug: Show API_URL being used (only in development or if API_URL looks like localhost)
+    if "localhost" in API_URL or "127.0.0.1" in API_URL:
+        with st.expander("🔧 Debug Info (Development Mode)"):
+            st.info(f"API URL: `{API_URL}`")
+    
     # Add floating circles
     st.markdown(
         """
@@ -836,24 +841,31 @@ def login_view():
             password = st.text_input("Password", type="password", key="login_pw",
                                       placeholder="••••••••")
             if st.button("Login Now", key="login_btn"):
-                r = requests.post(f"{API_URL}/auth/login", json={"email": email, "password": password})
-                if r.status_code == 200:
-                    try:
-                        st.session_state.token = r.json()["access_token"]
-                        me_r = requests.get(f"{API_URL}/auth/me", headers=auth_headers())
-                        if me_r.status_code == 200:
-                            st.session_state.user = me_r.json()
-                            st.rerun()
-                        else:
-                            st.error("Failed to retrieve user profile after login.")
-                    except Exception:
-                        st.error("Login succeeded but returned invalid data format.")
-                else:
-                    try:
-                        err_detail = r.json().get("detail", "Login failed")
-                    except Exception:
-                        err_detail = f"Server Error (Status: {r.status_code})"
-                    st.error(err_detail)
+                try:
+                    r = requests.post(f"{API_URL}/auth/login", json={"email": email, "password": password}, timeout=10)
+                    if r.status_code == 200:
+                        try:
+                            st.session_state.token = r.json()["access_token"]
+                            me_r = requests.get(f"{API_URL}/auth/me", headers=auth_headers(), timeout=10)
+                            if me_r.status_code == 200:
+                                st.session_state.user = me_r.json()
+                                st.rerun()
+                            else:
+                                st.error("Failed to retrieve user profile after login.")
+                        except Exception:
+                            st.error("Login succeeded but returned invalid data format.")
+                    else:
+                        try:
+                            err_detail = r.json().get("detail", "Login failed")
+                        except Exception:
+                            err_detail = f"Server Error (Status: {r.status_code})"
+                        st.error(err_detail)
+                except requests.exceptions.ConnectionError:
+                    st.error(f"❌ Cannot connect to API server at {API_URL}\n\n**Please ensure the backend is deployed and the API_URL is correct.**\n\nSee [DEPLOYMENT.md](https://github.com/HadiaAkbar/Contract-Risk-analyzer/blob/login-page-error/DEPLOYMENT.md) for setup instructions.")
+                except requests.exceptions.Timeout:
+                    st.error("⏱️ API request timed out. Please try again.")
+                except Exception as e:
+                    st.error(f"🔴 Unexpected error: {str(e)}")
 
         with tab2:
             name = st.text_input("Full Name", placeholder="John Doe")
@@ -861,16 +873,23 @@ def login_view():
             pw_r = st.text_input("Password", type="password", key="reg_pw",
                                   placeholder="Create a password")
             if st.button("Create Account", key="register_btn"):
-                r = requests.post(f"{API_URL}/auth/register",
-                                   json={"full_name": name, "email": email_r, "password": pw_r})
-                if r.status_code == 201:
-                    st.success("Registered! Please log in.")
-                else:
-                    try:
-                        err_detail = r.json().get("detail", "Registration failed")
-                    except Exception:
-                        err_detail = f"Server Error (Status: {r.status_code})"
-                    st.error(err_detail)
+                try:
+                    r = requests.post(f"{API_URL}/auth/register",
+                                       json={"full_name": name, "email": email_r, "password": pw_r}, timeout=10)
+                    if r.status_code == 201:
+                        st.success("✅ Registered! Please log in.")
+                    else:
+                        try:
+                            err_detail = r.json().get("detail", "Registration failed")
+                        except Exception:
+                            err_detail = f"Server Error (Status: {r.status_code})"
+                        st.error(err_detail)
+                except requests.exceptions.ConnectionError:
+                    st.error(f"❌ Cannot connect to API server at {API_URL}\n\n**Please ensure the backend is deployed and the API_URL is correct.**\n\nSee [DEPLOYMENT.md](https://github.com/HadiaAkbar/Contract-Risk-analyzer/blob/login-page-error/DEPLOYMENT.md) for setup instructions.")
+                except requests.exceptions.Timeout:
+                    st.error("⏱️ API request timed out. Please try again.")
+                except Exception as e:
+                    st.error(f"🔴 Unexpected error: {str(e)}")
 
         st.markdown(
             """
