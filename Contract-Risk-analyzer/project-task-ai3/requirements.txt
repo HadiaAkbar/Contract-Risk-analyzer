@@ -1,4 +1,4 @@
-streamlit==1.31.1
+streamlit
 langchain
 langchain-community
 langchain-core
@@ -10,5 +10,5 @@ pypdf
 python-docx
 sqlalchemy
 reportlab
-pydantic>=2.7.4
+pydantic
 python-dotenv
