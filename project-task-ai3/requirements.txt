@@ -7,4 +7,4 @@ PyPDF2
 python-docx
 sqlalchemy
 reportlab
-pydantic==2.5.2
+pydantic>=2.7.4
