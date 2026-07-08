@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import math
 
 API_URL = st.secrets.get("API_URL", "http://localhost:8000") if hasattr(st, "secrets") else "http://localhost:8000"
 try:
@@ -18,6 +19,7 @@ def auth_headers():
     return {"Authorization": f"Bearer {st.session_state.token}"}
 
 
+# Enhanced CSS with circular patterns and gauges
 LOGIN_CSS = """
 <style>
     * {box-sizing: border-box;}
@@ -28,11 +30,18 @@ LOGIN_CSS = """
     .stApp {
         background-color: #061109;
         background-image: 
-            radial-gradient(at 0% 0%, rgba(52, 211, 153, 0.15) 0, transparent 50%), 
-            radial-gradient(at 50% 0%, rgba(34, 197, 94, 0.1) 0, transparent 50%), 
-            radial-gradient(at 100% 0%, rgba(52, 211, 153, 0.15) 0, transparent 50%);
+            radial-gradient(circle at 10% 20%, rgba(52, 211, 153, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 90% 80%, rgba(34, 197, 94, 0.06) 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, rgba(52, 211, 153, 0.03) 0%, transparent 70%);
         margin: 0; 
         padding: 0;
+    }
+
+    /* Circular decorative elements */
+    .circular-accent {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(52, 211, 153, 0.1), transparent);
     }
 
     /* Animations */
@@ -74,6 +83,22 @@ LOGIN_CSS = """
         50% { box-shadow: 0 0 40px rgba(52, 211, 153, 0.4); }
     }
 
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse-ring {
+        0% {
+            r: 45;
+            opacity: 1;
+        }
+        100% {
+            r: 65;
+            opacity: 0;
+        }
+    }
+
     /* Main container layout */
     [data-testid="stHorizontalBlock"] {
         gap: 3rem !important;
@@ -101,12 +126,25 @@ LOGIN_CSS = """
     
     div[data-testid="column"]:has(> div .login-marker) [data-testid="stVerticalBlock"] {
         width: 100% !important;
-        background: #0d1a13 !important; /* Solid dark background for high visibility */
-        border: 2px solid #34d399 !important; /* Prominent green border */
+        background: #0d1a13 !important;
+        border: 2px solid #34d399 !important;
         border-radius: 28px;
         padding: 3rem 2.5rem !important;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    div[data-testid="column"]:has(> div .login-marker) [data-testid="stVerticalBlock"]::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(52, 211, 153, 0.05) 0%, transparent 70%);
+        pointer-events: none;
     }
     
     div[data-testid="column"]:has(> div .login-marker) [data-testid="stVerticalBlock"]:hover {
@@ -123,12 +161,25 @@ LOGIN_CSS = """
     
     div[data-testid="column"]:has(> div .hero-marker) [data-testid="stVerticalBlock"] {
         width: 100% !important;
-        background: #071309 !important; /* Slightly darker solid background */
-        border: 2px solid rgba(52, 211, 153, 0.4) !important; /* Clear border */
+        background: #071309 !important;
+        border: 2px solid rgba(52, 211, 153, 0.4) !important;
         border-radius: 28px;
         padding: 3.5rem 3rem !important;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    div[data-testid="column"]:has(> div .hero-marker) [data-testid="stVerticalBlock"]::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        left: -30%;
+        width: 160%;
+        height: 160%;
+        background: radial-gradient(circle, rgba(52, 211, 153, 0.04) 0%, transparent 70%);
+        pointer-events: none;
     }
     
     div[data-testid="column"]:has(> div .hero-marker) [data-testid="stVerticalBlock"]:hover {
@@ -148,7 +199,7 @@ LOGIN_CSS = """
     .waves { animation-delay: 0.8s; }
     .fine-print { animation-delay: 0.9s; }
 
-    /* Logo row */
+    /* Logo row with circular badge */
     .logo-row {
         display: flex;
         align-items: center;
@@ -162,9 +213,10 @@ LOGIN_CSS = """
         justify-content: center;
         width: 48px;
         height: 48px;
-        border-radius: 14px;
-        background: rgba(52, 211, 153, 0.15);
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(52, 211, 153, 0.25), rgba(52, 211, 153, 0.05));
         border: 2px solid #34d399;
+        box-shadow: 0 0 15px rgba(52, 211, 153, 0.2);
     }
     
     .logo-row .brand {
@@ -284,6 +336,254 @@ LOGIN_CSS = """
 </style>
 """
 
+# Dashboard CSS with circular gauges and patterns
+DASHBOARD_CSS = """
+<style>
+    /* Circular risk gauge styling */
+    .risk-gauge-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #0d1a13 0%, #061109 100%);
+        border: 1px solid rgba(52, 211, 153, 0.2);
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .risk-gauge-container:hover {
+        border-color: rgba(52, 211, 153, 0.4);
+        box-shadow: 0 8px 24px rgba(52, 211, 153, 0.1);
+    }
+
+    .gauge-title {
+        color: #a7b5ad;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .gauge-value {
+        color: #34d399;
+        font-size: 2rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+    }
+
+    .gauge-label {
+        color: #6b7280;
+        font-size: 0.85rem;
+    }
+
+    /* Circular badge styling */
+    .risk-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        border: 2px solid;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .risk-badge.high {
+        background: radial-gradient(circle at 30% 30%, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.05));
+        border-color: #ef4444;
+        color: #fca5a5;
+    }
+
+    .risk-badge.medium {
+        background: radial-gradient(circle at 30% 30%, rgba(245, 158, 11, 0.3), rgba(245, 158, 11, 0.05));
+        border-color: #f59e0b;
+        color: #fcd34d;
+    }
+
+    .risk-badge.low {
+        background: radial-gradient(circle at 30% 30%, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.05));
+        border-color: #22c55e;
+        color: #86efac;
+    }
+
+    /* Progress ring animation */
+    .progress-ring {
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+    }
+
+    .progress-ring-circle {
+        transition: stroke-dashoffset 0.5s ease;
+        stroke-dasharray: 282.7;
+    }
+
+    /* Circular stat card */
+    .stat-card-circular {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, #0d1a13 0%, #061109 100%);
+        border: 1px solid rgba(52, 211, 153, 0.15);
+        border-radius: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card-circular:hover {
+        border-color: rgba(52, 211, 153, 0.3);
+        box-shadow: 0 8px 24px rgba(52, 211, 153, 0.1);
+        transform: translateY(-4px);
+    }
+
+    .stat-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, rgba(52, 211, 153, 0.2), rgba(52, 211, 153, 0.02));
+        border: 2px solid rgba(52, 211, 153, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        font-size: 2rem;
+        font-weight: 900;
+        color: #34d399;
+    }
+
+    .stat-label {
+        color: #a7b5ad;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Decorative circular patterns */
+    .circular-pattern-bg {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .circular-pattern-bg::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(52, 211, 153, 0.03) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .circular-pattern-bg::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -30%;
+        width: 160%;
+        height: 160%;
+        background: radial-gradient(circle, rgba(34, 197, 94, 0.02) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    /* Risk level indicator with circular design */
+    .risk-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+        box-shadow: 0 0 8px currentColor;
+    }
+
+    .risk-indicator.high {
+        background-color: #ef4444;
+        color: #ef4444;
+    }
+
+    .risk-indicator.medium {
+        background-color: #f59e0b;
+        color: #f59e0b;
+    }
+
+    .risk-indicator.low {
+        background-color: #22c55e;
+        color: #22c55e;
+    }
+</style>
+"""
+
+
+def create_circular_gauge_svg(value, max_value=100, label=""):
+    """Create an SVG circular gauge/progress ring."""
+    percentage = min(value / max_value, 1.0)
+    circumference = 2 * math.pi * 45
+    stroke_dashoffset = circumference * (1 - percentage)
+    
+    # Determine color based on value
+    if value >= 60:
+        color = "#ef4444"  # Red for high risk
+    elif value >= 40:
+        color = "#f59e0b"  # Orange for medium risk
+    else:
+        color = "#22c55e"  # Green for low risk
+    
+    svg = f"""
+    <svg width="140" height="140" viewBox="0 0 140 140" style="margin: 0 auto; display: block;">
+        <defs>
+            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:{color};stop-opacity:0.3" />
+                <stop offset="100%" style="stop-color:{color};stop-opacity:1" />
+            </linearGradient>
+        </defs>
+        <!-- Background circle -->
+        <circle cx="70" cy="70" r="60" fill="none" stroke="rgba(52, 211, 153, 0.1)" stroke-width="8"/>
+        <!-- Progress circle -->
+        <circle cx="70" cy="70" r="60" fill="none" stroke="url(#gaugeGradient)" stroke-width="8" 
+                stroke-dasharray="{circumference}" stroke-dashoffset="{stroke_dashoffset}"
+                stroke-linecap="round" style="transform: rotate(-90deg); transform-origin: 70px 70px; transition: stroke-dashoffset 0.5s ease;"/>
+        <!-- Center text -->
+        <text x="70" y="75" text-anchor="middle" font-size="28" font-weight="900" fill="{color}">{int(value)}</text>
+        <text x="70" y="95" text-anchor="middle" font-size="12" fill="#a7b5ad">{label}</text>
+    </svg>
+    """
+    return svg
+
+
+def create_risk_badge_svg(risk_level):
+    """Create a circular badge for risk level."""
+    if risk_level.lower() == "high":
+        color = "#ef4444"
+        bg_color = "rgba(239, 68, 68, 0.1)"
+    elif risk_level.lower() == "medium":
+        color = "#f59e0b"
+        bg_color = "rgba(245, 158, 11, 0.1)"
+    else:
+        color = "#22c55e"
+        bg_color = "rgba(34, 197, 94, 0.1)"
+    
+    svg = f"""
+    <svg width="100" height="100" viewBox="0 0 100 100">
+        <defs>
+            <radialGradient id="badgeGradient" cx="30%" cy="30%">
+                <stop offset="0%" style="stop-color:{color};stop-opacity:0.3" />
+                <stop offset="100%" style="stop-color:{color};stop-opacity:0.05" />
+            </radialGradient>
+        </defs>
+        <circle cx="50" cy="50" r="45" fill="url(#badgeGradient)" stroke="{color}" stroke-width="2"/>
+        <text x="50" y="60" text-anchor="middle" font-size="16" font-weight="700" fill="{color}" text-transform="uppercase">{risk_level[0]}</text>
+    </svg>
+    """
+    return svg
+
 
 def login_view():
     st.markdown(LOGIN_CSS, unsafe_allow_html=True)
@@ -388,33 +688,96 @@ def main_app():
 
 
 def show_dashboard():
+    st.markdown(DASHBOARD_CSS, unsafe_allow_html=True)
     st.header("📊 AI Insights Dashboard")
+    
     r = requests.get(f"{API_URL}/dashboard", headers=auth_headers())
     if r.status_code != 200:
         st.error("Failed to load dashboard")
         return
+    
     stats = r.json()
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.metric("Total Documents", stats.get("total_documents", 0))
-    with c2:
-        st.metric("High Risk", stats.get("high_risk_count", 0))
-    with c3:
-        st.metric("Medium Risk", stats.get("medium_risk_count", 0))
-    with c4:
-        st.metric("Low Risk", stats.get("low_risk_count", 0))
+    
+    # Create circular gauge displays
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.markdown('<div class="stat-card-circular">', unsafe_allow_html=True)
+        st.markdown('<div class="stat-circle">📄</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="color: #34d399; font-size: 1.8rem; font-weight: 900;">{stats.get("total_documents", 0)}</div>', unsafe_allow_html=True)
+        st.markdown('<div class="stat-label">Total Documents</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col2:
+        high_risk = stats.get("high_risk_documents", 0)
+        st.markdown('<div class="stat-card-circular">', unsafe_allow_html=True)
+        st.markdown(create_circular_gauge_svg(high_risk * 10, 100, "High Risk"), unsafe_allow_html=True)
+        st.markdown('<div class="stat-label">High Risk Count</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col3:
+        avg_risk = stats.get("average_risk_score", 0)
+        st.markdown('<div class="stat-card-circular">', unsafe_allow_html=True)
+        st.markdown(create_circular_gauge_svg(avg_risk, 100, "Avg Risk"), unsafe_allow_html=True)
+        st.markdown('<div class="stat-label">Average Risk Score</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown('<div class="stat-card-circular">', unsafe_allow_html=True)
+        st.markdown('<div class="stat-circle">⚡</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="color: #34d399; font-size: 1.8rem; font-weight: 900;">{len(stats.get("frequently_detected_risks", []))}</div>', unsafe_allow_html=True)
+        st.markdown('<div class="stat-label">Risk Types</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    st.subheader("Recent Analyses")
+    st.divider()
+    
+    # Risk distribution with circular badges
+    st.subheader("🎯 Frequently Detected Risks")
+    frequent = stats.get("frequently_detected_risks", [])
+    
+    if frequent:
+        risk_cols = st.columns(min(5, len(frequent)))
+        for idx, risk in enumerate(frequent[:5]):
+            with risk_cols[idx]:
+                st.markdown(
+                    f"""
+                    <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #0d1a13 0%, #061109 100%); 
+                    border: 1px solid rgba(52, 211, 153, 0.15); border-radius: 16px;">
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, rgba(52, 211, 153, 0.2), rgba(52, 211, 153, 0.02)); 
+                        border: 2px solid rgba(52, 211, 153, 0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem; font-size: 1.5rem; font-weight: 900; color: #34d399;">
+                            {risk['count']}
+                        </div>
+                        <div style="color: #a7b5ad; font-size: 0.85rem; font-weight: 600; word-wrap: break-word;">{risk['title'][:20]}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+    else:
+        st.info("No risks detected yet.")
+
+    st.divider()
+    st.subheader("📋 Recent Analyses")
     recent = stats.get("recent_documents", [])
     if recent:
         for doc in recent:
-            with st.expander(f"📄 {doc['filename']} - Risk: {doc['risk_level']}"):
-                st.write(doc.get("summary", "No summary available"))
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.write(f"📄 **{doc['filename']}**")
+                st.caption(doc.get("summary", "No summary available")[:100] + "...")
+            with col2:
+                risk_level = doc['risk_level'].lower()
+                if risk_level == "high":
+                    st.markdown('<span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #ef4444; box-shadow: 0 0 8px #ef4444; margin-right: 0.5rem;"></span><span style="color: #ef4444; font-weight: 700;">HIGH</span>', unsafe_allow_html=True)
+                elif risk_level == "medium":
+                    st.markdown('<span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #f59e0b; box-shadow: 0 0 8px #f59e0b; margin-right: 0.5rem;"></span><span style="color: #f59e0b; font-weight: 700;">MEDIUM</span>', unsafe_allow_html=True)
+                else:
+                    st.markdown('<span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #22c55e; box-shadow: 0 0 8px #22c55e; margin-right: 0.5rem;"></span><span style="color: #22c55e; font-weight: 700;">LOW</span>', unsafe_allow_html=True)
     else:
         st.info("No documents analyzed yet.")
 
 
 def show_upload():
+    st.markdown(DASHBOARD_CSS, unsafe_allow_html=True)
     st.header("📤 Upload & Analyze Document")
     uploaded_file = st.file_uploader("Choose a document", type=["pdf", "docx", "txt"])
     if uploaded_file:
@@ -430,6 +793,7 @@ def show_upload():
 
 
 def show_documents():
+    st.markdown(DASHBOARD_CSS, unsafe_allow_html=True)
     st.header("📚 My Documents")
     r = requests.get(f"{API_URL}/documents", headers=auth_headers())
     if r.status_code == 200:
@@ -437,7 +801,7 @@ def show_documents():
         if docs:
             for doc in docs:
                 with st.expander(f"📄 {doc['filename']} - {doc['risk_level']}"):
-                    st.write(f"Uploaded: {doc['created_at']}")
+                    st.write(f"Uploaded: {doc.get('uploaded_at', 'N/A')}")
                     st.write(f"Summary: {doc.get('summary', 'N/A')}")
         else:
             st.info("No documents found.")
@@ -446,6 +810,7 @@ def show_documents():
 
 
 def show_search():
+    st.markdown(DASHBOARD_CSS, unsafe_allow_html=True)
     st.header("🔍 Search Documents")
     query = st.text_input("Enter search query")
     if query:
