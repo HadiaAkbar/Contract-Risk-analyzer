@@ -1,19 +1,13 @@
-# VERSION: 1.0.3 - DB AUTO-INIT
+# VERSION: 1.0.1 - CACHE BUST
 import streamlit as st
 import os
 import datetime
 from summarizer import read_file, generate_txt_bytes, generate_pdf_bytes, generate_combined_txt_bytes, generate_pdf_bytes_multi
 from ai_analyzer import AIAnalyzer
-from database import SessionLocal, User, Document, get_db, engine, Base
+from database import SessionLocal, User, Document, get_db
 from sqlalchemy.orm import Session
 
-# --- Automatic Database Initialization ---
-try:
-    Base.metadata.create_all(engine)
-except Exception as e:
-    st.error(f"Failed to initialize database: {e}")
-
-# BUILD VERSION: 2026-07-08_v13.0 - STABLE CLOUD BUILD
+# BUILD VERSION: 2026-07-08_v12.0 - STABLE CLOUD BUILD
 
 st.set_page_config(
     page_title="Contract Analyzer AI",
