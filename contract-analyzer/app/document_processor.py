@@ -1,5 +1,4 @@
 import os
-import magic
 from pypdf import PdfReader
 import docx
 
@@ -93,25 +92,5 @@ def validate_file(filename: str, contents: bytes, max_mb: int, allowed_ext: set)
         return False, f"File exceeds max size of {max_mb}MB"
     if size_bytes == 0:
         return False, "File is empty"
-
-    # 3. MIME type validation (deeper check)
-    try:
-        mime = magic.from_buffer(contents, mime=True)
-        valid_mimes = {
-            ".pdf": ["application/pdf"],
-            ".docx": ["application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/zip"],
-            ".txt": ["text/plain", "application/octet-stream"]
-        }
-        
-        if ext in valid_mimes:
-            if mime not in valid_mimes[ext]:
-                # Special case for some docx being seen as zip
-                if ext == ".docx" and mime == "application/zip":
-                    pass
-                else:
-                    return False, f"File content does not match its extension. Detected type: {mime}"
-    except Exception:
-        # If magic check fails, we proceed with extension check only
-        pass
 
     return True, ""
