@@ -25,28 +25,36 @@ LOGIN_CSS = """
     
     #MainMenu, header, footer {visibility: hidden;}
     .block-container {padding: 0 !important; max-width: 100% !important;}
-    .stApp {background: linear-gradient(135deg, #061109 0%, #0a1f14 100%); margin: 0; padding: 0;}
+    .stApp {
+        background-color: #061109;
+        background-image: 
+            radial-gradient(at 0% 0%, rgba(52, 211, 153, 0.15) 0, transparent 50%), 
+            radial-gradient(at 50% 0%, rgba(34, 197, 94, 0.1) 0, transparent 50%), 
+            radial-gradient(at 100% 0%, rgba(52, 211, 153, 0.15) 0, transparent 50%);
+        margin: 0; 
+        padding: 0;
+    }
 
     /* Animations */
-    @keyframes slideInLeft {
-        from {
+    @keyframes cardEntranceLeft {
+        0% {
             opacity: 0;
-            transform: translateX(-60px);
+            transform: translateX(-100px) rotate(-5deg);
         }
-        to {
+        100% {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateX(0) rotate(0deg);
         }
     }
     
-    @keyframes slideInRight {
-        from {
+    @keyframes cardEntranceRight {
+        0% {
             opacity: 0;
-            transform: translateX(60px);
+            transform: translateX(100px) rotate(5deg);
         }
-        to {
+        100% {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateX(0) rotate(0deg);
         }
     }
     
@@ -61,23 +69,19 @@ LOGIN_CSS = """
         }
     }
     
-    @keyframes float {
-        0%, 100% {
-            transform: translateY(0px);
-        }
-        50% {
-            transform: translateY(-10px);
-        }
+    @keyframes glow {
+        0%, 100% { box-shadow: 0 0 20px rgba(52, 211, 153, 0.2); }
+        50% { box-shadow: 0 0 40px rgba(52, 211, 153, 0.4); }
     }
 
-    /* Main container */
+    /* Main container layout */
     [data-testid="stHorizontalBlock"] {
-        gap: 2rem !important;
+        gap: 3rem !important;
         align-items: center !important;
         justify-content: center !important;
-        height: 100vh;
+        min-height: 100vh;
         margin: 0 !important;
-        padding: 2rem !important;
+        padding: 4rem 2rem !important;
         flex-wrap: wrap;
     }
     
@@ -88,381 +92,193 @@ LOGIN_CSS = """
         align-items: center;
     }
 
-    /* Left card - Credentials */
+    /* Left card - Credentials (High Visibility) */
     div[data-testid="column"]:has(> div .login-marker) {
-        flex: 0 1 420px !important;
-        max-width: 420px !important;
-        animation: slideInLeft 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+        flex: 0 1 450px !important;
+        max-width: 450px !important;
+        animation: cardEntranceLeft 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     
     div[data-testid="column"]:has(> div .login-marker) [data-testid="stVerticalBlock"] {
         width: 100% !important;
-        background: rgba(13, 26, 19, 0.6);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(52, 211, 153, 0.25);
-        border-radius: 24px;
+        background: #0d1a13 !important; /* Solid dark background for high visibility */
+        border: 2px solid #34d399 !important; /* Prominent green border */
+        border-radius: 28px;
         padding: 3rem 2.5rem !important;
-        box-shadow: 
-            0 20px 60px rgba(0, 0, 0, 0.4),
-            0 0 1px rgba(52, 211, 153, 0.5),
-            inset 0 1px 0 rgba(52, 211, 153, 0.2);
-        animation: fadeInUp 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both, float 6s ease-in-out 2s infinite;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    div[data-testid="column"]:has(> div .login-marker) [data-testid="stVerticalBlock"]:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 30px 60px -12px rgba(52, 211, 153, 0.3);
     }
 
-    /* Right card - Welcome */
+    /* Right card - Welcome (High Visibility) */
     div[data-testid="column"]:has(> div .hero-marker) {
-        flex: 0 1 420px !important;
-        max-width: 420px !important;
-        animation: slideInRight 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+        flex: 0 1 450px !important;
+        max-width: 450px !important;
+        animation: cardEntranceRight 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     
     div[data-testid="column"]:has(> div .hero-marker) [data-testid="stVerticalBlock"] {
         width: 100% !important;
-        background: rgba(4, 20, 11, 0.5);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(52, 211, 153, 0.2);
-        border-radius: 24px;
-        padding: 3rem 2.5rem !important;
-        box-shadow: 
-            0 20px 60px rgba(0, 0, 0, 0.3),
-            0 0 1px rgba(52, 211, 153, 0.3),
-            inset 0 1px 0 rgba(52, 211, 153, 0.15);
-        animation: fadeInUp 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both, float 6s ease-in-out 2.5s infinite;
+        background: #071309 !important; /* Slightly darker solid background */
+        border: 2px solid rgba(52, 211, 153, 0.4) !important; /* Clear border */
+        border-radius: 28px;
+        padding: 3.5rem 3rem !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+    
+    div[data-testid="column"]:has(> div .hero-marker) [data-testid="stVerticalBlock"]:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 30px 60px -12px rgba(52, 211, 153, 0.2);
+    }
+
+    /* Inner Elements Animations */
+    .logo-row, .section-label, .ai-badge, .hero-title, .hero-sub, .waves, .fine-print {
+        animation: fadeInUp 0.8s ease-out both;
+    }
+    
+    .logo-row { animation-delay: 0.4s; }
+    .section-label { animation-delay: 0.5s; }
+    .hero-title { animation-delay: 0.6s; }
+    .hero-sub { animation-delay: 0.7s; }
+    .waves { animation-delay: 0.8s; }
+    .fine-print { animation-delay: 0.9s; }
 
     /* Logo row */
     .logo-row {
         display: flex;
         align-items: center;
-        gap: 0.65rem;
+        gap: 0.8rem;
         margin-bottom: 2rem;
-        flex-wrap: nowrap;
-        animation: fadeInUp 0.9s ease-out 0.4s both;
     }
     
     .logo-row .flag {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
         background: rgba(52, 211, 153, 0.15);
-        flex-shrink: 0;
-        border: 1px solid rgba(52, 211, 153, 0.3);
+        border: 2px solid #34d399;
     }
     
     .logo-row .brand {
-        color: #f5f7f6;
-        font-size: 1.3rem;
-        font-weight: 700;
-        white-space: nowrap;
+        color: #ffffff;
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
     }
 
     .section-label {
         color: #6ee7b7;
-        letter-spacing: 2px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        text-transform: uppercase;
-        animation: fadeInUp 0.9s ease-out 0.45s both;
-    }
-
-    .ai-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(52, 211, 153, 0.12);
-        border: 1px solid rgba(52, 211, 153, 0.4);
-        color: #4ade80;
-        font-weight: 700;
+        letter-spacing: 3px;
         font-size: 0.8rem;
-        padding: 0.5rem 1rem;
-        border-radius: 999px;
-        margin-bottom: 1.5rem;
-        letter-spacing: 1px;
-        width: fit-content;
-        animation: fadeInUp 0.9s ease-out 0.5s both;
-    }
-    
-    .ai-badge .dot {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #4ade80;
-        flex-shrink: 0;
-        animation: pulse 2s ease-in-out infinite;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
+        font-weight: 800;
+        margin-bottom: 2rem;
+        text-transform: uppercase;
+        border-left: 3px solid #34d399;
+        padding-left: 10px;
     }
 
     .hero-title {
-        color: #f5f7f6;
-        font-size: clamp(1.5rem, 4vw, 2.4rem);
-        font-weight: 800;
-        line-height: 1.3;
-        margin-bottom: 1.2rem;
-        max-width: 100%;
-        word-wrap: break-word;
-        animation: fadeInUp 0.9s ease-out 0.5s both;
+        color: #ffffff;
+        font-size: clamp(1.8rem, 5vw, 2.6rem);
+        font-weight: 900;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
     }
     
     .hero-title .accent {
-        color: #4ade80;
-        background: linear-gradient(135deg, #4ade80, #22c55e);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #34d399;
+        text-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
     }
 
     .hero-sub {
-        color: #b9c4bd;
-        font-size: clamp(0.95rem, 2vw, 1.05rem);
-        line-height: 1.7;
-        max-width: 100%;
-        margin-bottom: 2rem;
-        animation: fadeInUp 0.9s ease-out 0.6s both;
+        color: #a7b5ad;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 2.5rem;
     }
 
-    .waves {
-        margin-top: 1.5rem;
-        opacity: 0.6;
-        max-width: 100%;
-        height: auto;
-        animation: fadeInUp 0.9s ease-out 0.7s both;
-    }
-
-    /* Tabs - Responsive */
-    .stTabs {
-        margin-bottom: 1.5rem;
-        width: 100%;
-    }
-    
+    /* Customizing Streamlit Tabs */
     .stTabs [data-baseweb="tab-list"] {
-        background: rgba(13, 26, 19, 0.4) !important;
-        border-radius: 12px;
+        background: #061109 !important;
+        border-radius: 14px;
         padding: 6px;
-        gap: 8px !important;
-        width: 100% !important;
-        display: flex !important;
-        border-bottom: none !important;
-        flex-wrap: wrap !important;
-        border: 1px solid rgba(52, 211, 153, 0.15) !important;
+        border: 1px solid rgba(52, 211, 153, 0.2) !important;
     }
     
     .stTabs [data-baseweb="tab"] {
-        background: transparent;
+        height: 50px;
         border-radius: 10px !important;
         color: #9ca3af;
-        font-weight: 600;
-        padding: 12px 16px !important;
-        flex: 1 1 0 !important;
-        justify-content: center;
-        display: flex !important;
-        align-items: center;
-        margin: 0 !important;
-        min-height: 44px;
+        font-weight: 700;
         font-size: 1rem;
-        white-space: nowrap;
-        border: 1px solid transparent !important;
         transition: all 0.3s ease;
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #34d399, #22c55e) !important;
+        background: #34d399 !important;
         color: #04140b !important;
-        box-shadow: 0 4px 15px rgba(52, 211, 153, 0.3);
-    }
-    
-    .stTabs [data-baseweb="tab-highlight"] {
-        display: none !important;
-    }
-    
-    .stTabs [data-baseweb="tab-border"] {
-        display: none !important;
-    }
-    
-    .stTabs [data-testid="stMarkdownContainer"] p {
-        font-weight: inherit;
-        margin: 0;
+        box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
     }
 
-    /* Input fields - Responsive */
-    .stTextInput {
-        width: 100%;
-        margin-bottom: 1.2rem;
-    }
-    
-    .stTextInput > label {
-        color: #d1d5db !important;
-        font-weight: 600;
-        font-size: 0.9rem;
-        display: block;
-        margin-bottom: 0.6rem;
-    }
-    
+    /* Input fields styling */
     .stTextInput input {
-        background: rgba(13, 26, 19, 0.5) !important;
-        color: #f5f7f6 !important;
-        border: 1px solid rgba(52, 211, 153, 0.2) !important;
-        border-radius: 10px !important;
-        padding: 0.85rem 1.1rem !important;
-        width: 100% !important;
-        font-size: 1rem;
-        min-height: 48px;
-        box-sizing: border-box;
-        transition: all 0.3s ease;
+        background: #061109 !important;
+        color: #ffffff !important;
+        border: 2px solid rgba(52, 211, 153, 0.2) !important;
+        border-radius: 12px !important;
+        height: 54px !important;
+        font-size: 1.05rem !important;
     }
     
     .stTextInput input:focus {
-        border: 1px solid #34d399 !important;
-        box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1) !important;
-        background: rgba(13, 26, 19, 0.7) !important;
-    }
-    
-    .stTextInput input::placeholder {
-        color: #5b6660;
+        border-color: #34d399 !important;
+        box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.1) !important;
     }
 
-    /* Buttons - Responsive */
-    div[data-testid="stButton"] {
-        width: 100%;
-        margin-bottom: 0.75rem;
-    }
-    
+    /* Button styling */
     .stButton button {
-        background: linear-gradient(135deg, #34d399, #22c55e);
-        color: #04140b;
-        border: none;
-        border-radius: 10px;
-        font-weight: 700;
-        padding: 1rem !important;
-        width: 100% !important;
-        min-height: 48px;
-        transition: all 0.3s ease;
-        font-size: 1.1rem;
-        cursor: pointer;
-        box-sizing: border-box;
-        display: block !important;
-        box-shadow: 0 4px 15px rgba(52, 211, 153, 0.2);
+        background: #34d399 !important;
+        color: #04140b !important;
+        border-radius: 12px !important;
+        height: 56px !important;
+        font-weight: 800 !important;
+        font-size: 1.2rem !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
     }
     
     .stButton button:hover {
-        background: linear-gradient(135deg, #22c55e, #16a34a);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(52, 211, 153, 0.3);
-    }
-    
-    .stButton button:active {
-        transform: translateY(0);
-    }
-    
-    .stButton button p {
-        color: #04140b !important;
-        font-weight: 700;
-        margin: 0;
+        transform: scale(1.02);
+        background: #22c55e !important;
+        box-shadow: 0 10px 20px rgba(52, 211, 153, 0.3) !important;
     }
 
     /* Fine print */
     .fine-print {
-        color: #7c8a83;
-        font-size: 0.8rem;
-        margin-top: 1.5rem;
-        line-height: 1.6;
-        word-wrap: break-word;
+        color: #6b7280;
+        font-size: 0.85rem;
+        margin-top: 2rem;
         text-align: center;
-        animation: fadeInUp 0.9s ease-out 0.8s both;
     }
     
-    .fine-print a {
-        color: #4ade80;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-    
-    .fine-print a:hover {
-        color: #22c55e;
-        text-decoration: underline;
-    }
+    .fine-print a { color: #34d399; text-decoration: none; font-weight: 600; }
 
-    /* Mobile responsiveness */
+    /* Mobile adjustments */
     @media (max-width: 1024px) {
-        [data-testid="stHorizontalBlock"] {
-            flex-direction: column;
-            height: auto;
-            gap: 2rem;
-        }
-        
+        [data-testid="stHorizontalBlock"] { padding: 2rem 1rem !important; }
         div[data-testid="column"]:has(> div .login-marker),
         div[data-testid="column"]:has(> div .hero-marker) {
             flex: 0 1 100% !important;
-            max-width: 100% !important;
-        }
-    }
-
-    @media (max-width: 768px) {
-        [data-testid="stHorizontalBlock"] {
-            padding: 1.5rem 1rem !important;
-        }
-        
-        div[data-testid="column"]:has(> div .login-marker) [data-testid="stVerticalBlock"],
-        div[data-testid="column"]:has(> div .hero-marker) [data-testid="stVerticalBlock"] {
-            padding: 2rem 1.5rem !important;
-        }
-        
-        .logo-row .brand {
-            font-size: 1.1rem;
-        }
-        
-        .hero-title {
-            font-size: clamp(1.3rem, 3vw, 2rem);
-        }
-        
-        .stTabs [data-baseweb="tab"] {
-            padding: 10px 8px !important;
-            font-size: 0.9rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        [data-testid="stHorizontalBlock"] {
-            padding: 1rem 0.75rem !important;
-            gap: 1.5rem;
-        }
-        
-        div[data-testid="column"]:has(> div .login-marker) [data-testid="stVerticalBlock"],
-        div[data-testid="column"]:has(> div .hero-marker) [data-testid="stVerticalBlock"] {
-            padding: 1.5rem 1.2rem !important;
-        }
-        
-        .logo-row {
-            margin-bottom: 1.5rem;
-        }
-        
-        .logo-row .brand {
-            font-size: 1rem;
-        }
-        
-        .hero-title {
-            font-size: clamp(1.1rem, 2.5vw, 1.6rem);
-            margin-bottom: 1rem;
-        }
-        
-        .hero-sub {
-            font-size: 0.9rem;
-        }
-        
-        .stTextInput input {
-            padding: 0.75rem 0.9rem !important;
-        }
-        
-        .stButton button {
-            padding: 0.85rem 0.8rem !important;
-            font-size: 1rem;
+            max-width: 500px !important;
         }
     }
 </style>
@@ -472,6 +288,7 @@ LOGIN_CSS = """
 def login_view():
     st.markdown(LOGIN_CSS, unsafe_allow_html=True)
 
+    # Use columns to center the cards and give them a layout
     left, right = st.columns([1, 1], gap="large")
 
     with left:
@@ -480,13 +297,13 @@ def login_view():
             <div class="login-marker"></div>
             <div class="logo-row">
                 <span class="flag">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" fill="#34d399"/>
                     </svg>
                 </span>
                 <span class="brand">Contract Analyzer</span>
             </div>
-            <div class="section-label">Login / Register</div>
+            <div class="section-label">Account Access</div>
             """,
             unsafe_allow_html=True,
         )
@@ -494,10 +311,10 @@ def login_view():
         tab1, tab2 = st.tabs(["Login", "Register"])
 
         with tab1:
-            email = st.text_input("Email", key="login_email", placeholder="Enter your email")
+            email = st.text_input("Email", key="login_email", placeholder="your@email.com")
             password = st.text_input("Password", type="password", key="login_pw",
-                                      placeholder="Enter your password")
-            if st.button("Login", key="login_btn"):
+                                      placeholder="••••••••")
+            if st.button("Login Now", key="login_btn"):
                 r = requests.post(f"{API_URL}/auth/login", json={"email": email, "password": password})
                 if r.status_code == 200:
                     st.session_state.token = r.json()["access_token"]
@@ -508,11 +325,11 @@ def login_view():
                     st.error(r.json().get("detail", "Login failed"))
 
         with tab2:
-            name = st.text_input("Full Name", placeholder="Enter your full name")
-            email_r = st.text_input("Email", key="reg_email", placeholder="Enter your email")
+            name = st.text_input("Full Name", placeholder="John Doe")
+            email_r = st.text_input("Email", key="reg_email", placeholder="your@email.com")
             pw_r = st.text_input("Password", type="password", key="reg_pw",
-                                  placeholder="Choose a password")
-            if st.button("Register", key="register_btn"):
+                                  placeholder="Create a password")
+            if st.button("Create Account", key="register_btn"):
                 r = requests.post(f"{API_URL}/auth/register",
                                    json={"full_name": name, "email": email_r, "password": pw_r})
                 if r.status_code == 201:
@@ -523,7 +340,8 @@ def login_view():
         st.markdown(
             """
             <div class="fine-print">
-                By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+                Secure access to your legal insights. <br>
+                By continuing you agree to our <a href="#">Terms</a>.
             </div>
             """,
             unsafe_allow_html=True,
@@ -534,15 +352,15 @@ def login_view():
             """
             <div class="hero-marker"></div>
             <div class="hero-title">
-                Welcome to the <span class="accent">Contract & Legal Document Risk Analyzer</span>
+                Analyze Contracts with <span class="accent">AI Precision</span>
             </div>
             <div class="hero-sub">
-                Please login or register to continue. Once you're in, upload any agreement
-                and we'll flag termination windows, auto-renewals, and liability exposure in seconds.
+                Upload any agreement and we'll automatically flag termination windows, 
+                auto-renewals, and liability exposure in seconds.
             </div>
             <svg class="waves" width="100%" height="80" viewBox="0 0 420 80" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0 60 Q60 20 140 60 T280 60 T420 60" stroke="#2f5c40" stroke-width="1.5" opacity="0.7"/>
-                <path d="M0 72 Q60 32 140 72 T280 72 T420 72" stroke="#2f5c40" stroke-width="1.5" opacity="0.5"/>
+                <path d="M0 60 Q60 20 140 60 T280 60 T420 60" stroke="#34d399" stroke-width="2" opacity="0.8"/>
+                <path d="M0 72 Q60 32 140 72 T280 72 T420 72" stroke="#34d399" stroke-width="1.5" opacity="0.4"/>
             </svg>
             """,
             unsafe_allow_html=True,
