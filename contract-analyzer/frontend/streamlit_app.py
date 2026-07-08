@@ -8,7 +8,7 @@ try:
 except Exception:
     API_URL = "https://8000-izjqnp2jwtj1fai483ja1-7ef183eb.us1.manus.computer"
 
-st.set_page_config(page_title="Contract Risk Analyzer", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Contract Risk Analyzer", layout="wide", initial_sidebar_state="expanded")
 
 if "token" not in st.session_state:
     st.session_state.token = None
@@ -19,7 +19,7 @@ def auth_headers():
     return {"Authorization": f"Bearer {st.session_state.token}"}
 
 
-# Enhanced CSS with BOLD circular patterns
+# Enhanced CSS with circular patterns
 LOGIN_CSS = """
 <style>
     * {box-sizing: border-box;}
@@ -387,7 +387,7 @@ LOGIN_CSS = """
 </style>
 """
 
-# Dashboard CSS with circular patterns
+# Dashboard CSS with circular patterns and sidebar styling
 DASHBOARD_CSS = """
 <style>
     .stApp {
@@ -534,6 +534,124 @@ DASHBOARD_CSS = """
         pointer-events: none;
         z-index: 0;
     }
+
+    /* ===== SIDEBAR STYLING ===== */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(135deg, #0d1a13 0%, #061109 100%) !important;
+        background-image: 
+            radial-gradient(circle 200px at 20% 30%, rgba(52, 211, 153, 0.1) 0%, transparent 50%),
+            radial-gradient(circle 150px at 80% 70%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
+            linear-gradient(135deg, #0d1a13 0%, #061109 100%) !important;
+        border-right: 2px solid rgba(52, 211, 153, 0.25) !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+        background: transparent !important;
+    }
+
+    /* Sidebar title - User name */
+    [data-testid="stSidebar"] h1 {
+        background: radial-gradient(circle at 30% 30%, rgba(52, 211, 153, 0.15), rgba(52, 211, 153, 0.02)) !important;
+        padding: 1.5rem !important;
+        border-radius: 20px !important;
+        border: 2px solid rgba(52, 211, 153, 0.3) !important;
+        margin-bottom: 1rem !important;
+        font-size: 1.5rem !important;
+        font-weight: 900 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 15px rgba(52, 211, 153, 0.1) !important;
+    }
+
+    /* Sidebar caption - Role badge */
+    [data-testid="stSidebar"] .stCaption {
+        background: rgba(52, 211, 153, 0.1) !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 12px !important;
+        border: 2px solid rgba(52, 211, 153, 0.25) !important;
+        color: #6ee7b7 !important;
+        font-weight: 700 !important;
+        margin-bottom: 1.5rem !important;
+        display: inline-block !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        font-size: 0.75rem !important;
+        box-shadow: 0 2px 8px rgba(52, 211, 153, 0.1) !important;
+    }
+
+    /* Logout button styling */
+    [data-testid="stSidebar"] .stButton button {
+        background: linear-gradient(135deg, #34d399 0%, #22c55e 100%) !important;
+        color: #04140b !important;
+        border: 2px solid #34d399 !important;
+        border-radius: 14px !important;
+        height: 48px !important;
+        font-weight: 800 !important;
+        font-size: 1rem !important;
+        width: 100% !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 15px rgba(52, 211, 153, 0.2) !important;
+        margin-bottom: 2rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+    }
+
+    [data-testid="stSidebar"] .stButton button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(52, 211, 153, 0.3) !important;
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+    }
+
+    /* Navigation label */
+    [data-testid="stSidebar"] label {
+        color: #a7b5ad !important;
+        font-weight: 700 !important;
+        font-size: 0.9rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        margin-bottom: 1rem !important;
+        display: block !important;
+    }
+
+    /* Radio button container */
+    [data-testid="stSidebar"] [role="radiogroup"] {
+        background: transparent !important;
+    }
+
+    /* Individual radio option styling */
+    [data-testid="stSidebar"] .stRadio > label {
+        background: rgba(52, 211, 153, 0.05) !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 12px !important;
+        border: 2px solid rgba(52, 211, 153, 0.15) !important;
+        margin-bottom: 0.75rem !important;
+        transition: all 0.3s ease !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        color: #a7b5ad !important;
+        font-weight: 600 !important;
+    }
+
+    [data-testid="stSidebar"] .stRadio > label:hover {
+        background: rgba(52, 211, 153, 0.12) !important;
+        border-color: rgba(52, 211, 153, 0.35) !important;
+        box-shadow: 0 4px 12px rgba(52, 211, 153, 0.1) !important;
+    }
+
+    /* Selected radio option - Active page */
+    [data-testid="stSidebar"] .stRadio > label[data-selected="true"] {
+        background: radial-gradient(circle at 30% 30%, rgba(52, 211, 153, 0.25), rgba(52, 211, 153, 0.05)) !important;
+        border: 2px solid #34d399 !important;
+        color: #34d399 !important;
+        box-shadow: 0 4px 15px rgba(52, 211, 153, 0.2) !important;
+        font-weight: 800 !important;
+    }
+
+    /* Divider styling */
+    [data-testid="stSidebar"] hr {
+        border-color: rgba(52, 211, 153, 0.2) !important;
+        margin: 1.5rem 0 !important;
+    }
 </style>
 """
 
@@ -631,13 +749,18 @@ def login_view():
 
 
 def main_app():
+    st.markdown(DASHBOARD_CSS, unsafe_allow_html=True)
+    
     st.sidebar.title(f"👋 {st.session_state.user['full_name']}")
-    st.sidebar.caption(f"Role: {st.session_state.user['role']}")
-    if st.sidebar.button("Logout"):
+    st.sidebar.caption(f"🎯 Role: {st.session_state.user['role'].upper()}")
+    
+    if st.sidebar.button("🚪 Logout", use_container_width=True):
         st.session_state.token = None
         st.session_state.user = None
         st.rerun()
 
+    st.sidebar.divider()
+    
     page = st.sidebar.radio("Navigate", ["Dashboard", "Upload & Analyze", "My Documents", "Search"])
 
     if page == "Dashboard":
