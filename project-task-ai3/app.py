@@ -319,3 +319,5 @@ else:
 
     st.title("Document Analysis")
     st.write("Welcome to your AI-powered contract analysis workspace.")
+
+# Triggering fresh build on Streamlit Cloud - 2026-07-08
